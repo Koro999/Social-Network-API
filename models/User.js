@@ -33,6 +33,6 @@ userSchema.virtual('friendCount').get(function() {
 });
 
 // Initialize our User model (collections)
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model('users', userSchema);
 
 module.exports = User;
