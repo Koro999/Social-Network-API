@@ -49,6 +49,6 @@ thoughtSchema.virtual('reactionCount').get(function() {
 
 // Create models (collections)
 const Thought = mongoose.model('thoughts', thoughtSchema);
-// 
 
-module.exports = { Thought};
+
+module.exports = Thought;

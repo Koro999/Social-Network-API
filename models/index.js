@@ -1,6 +1,6 @@
 //import files accordingly
 const User = require('./User');
-const Thoughts = require('./Thoughts');
+const Thought = require('./Thought');
 
 //export for reference 
-module.exports = { User, Thoughts};
+module.exports = { User, Thought};

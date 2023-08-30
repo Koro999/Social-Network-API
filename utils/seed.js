@@ -1,6 +1,6 @@
 //import needed files
 const connection = require('../config/connection');
-const { User, Thoughts } = require('../models');
+const { User, Thought } = require('../models');
 const { getRandomUsername, getRandomThoughts, getRandomEmail } = require('./data');
 
 //if error return error
@@ -25,10 +25,19 @@ connection.once('open', async () => {
   const thoughts = getRandomThoughts(10);
 
   //push username and email into object, create 20 instances
-  for (let i = 0; i < 20; i++) {
-    const username = getRandomUsername();
-    const email = getRandomEmail();
+  for (let i = 0; i < 10; i++) {
 
+  // Generate a unique username
+  // keep grabbing a username until it is not a previously grabbed username
+  do {
+    username = getRandomUsername(); 
+  } while (users.some(user => user.username === username));
+
+  // Generate a unique email
+   // keep grabbing a email until it is not a previously grabbed email
+  do {
+    email = getRandomEmail();
+  } while (users.some(user => user.email === email));
     users.push({
       username,
       email
@@ -38,26 +47,24 @@ connection.once('open', async () => {
   //insert the generatedUser data into the 'users' collection
   //also saved as a variable for reference
   const generatedUsers = await User.collection.insertMany(users);
+  const insertedUserIds = Object.values(generatedUsers.insertedIds);
+  
+  for (const userId of insertedUserIds) {
+    const user = await User.findById(userId);
 
-  //ops is a property to access arrays of documents that were inserted or modified during DB operations
-  //ops stands for operations
-  //because we just inserted data above, we use ops
-
-  //so for each user inside the array of generatedUsers.ops
-  for (const user of generatedUsers.ops) {
-    const numFriends = Math.floor(Math.random() * generatedUsers.ops.length - 1) + 1; // Random number of friends (at least 1 friend)
-    const potentialFriends = generatedUsers.ops.filter(friend => friend !== user); // Exclude the user itself, so user can't friend self
+    const numFriends = Math.floor(Math.random() * generatedUsers.length - 1) + 1; // Random number of friends (at least 1 friend)
+    const potentialFriendIds = insertedUserIds.filter(id => id !== userId);// Exclude the user itself, so user can't friend self
     
-    user.friends = potentialFriends
+    user.friends = potentialFriendIds
       .sort(() => Math.random() - 0.5) //(sort) shuffle friends, to assure randomness
       .slice(0, numFriends) //select subset of friends, make sure each user has a random and varied set of friends
-      .map(friend => friend._id); //extract _id property, to create an array of references
+      //.map(friend => friend._id); //extract _id property, to create an array of references
 
     await user.save(); // Save user object with updated friend references
   }
 
-  //inser thoughts into the Thoughts collection
-  await Thoughts.collection.insertMany(thoughts);
+  //insert thoughts into the Thoughts collection
+  await Thought.collection.insertMany(thoughts);
 
   // loop through the saved videos, for each video we need to generate a video response and insert the video responses
   console.table(users);
