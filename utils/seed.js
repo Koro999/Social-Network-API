@@ -24,9 +24,8 @@ connection.once('open', async () => {
   const users = [];
   const thoughts = getRandomThoughts(10);
 
-  //push username and email into object, create 20 instances
+  //push username and email into object, create 10 instances
   for (let i = 0; i < 10; i++) {
-
   // Generate a unique username
   // keep grabbing a username until it is not a previously grabbed username
   do {
@@ -69,6 +68,23 @@ connection.once('open', async () => {
 
   //insert thoughts into the Thoughts collection
   await Thought.collection.insertMany(thoughts);
+
+  // Retrieve all thoughts from the database
+  const allThoughts = await Thought.find();
+
+  // Loop through each user and assign random thoughts to them
+  for (const userId of insertedUserIds) {
+    const user = await User.findById(userId);
+
+    const numThoughts = Math.floor(Math.random() * allThoughts.length - 1) + 1; // Random number of thoughts
+
+    user.thoughts = allThoughts
+      .sort(() => Math.random() - 0.5) // Shuffle thoughts for randomness
+      .slice(0, numThoughts) // Select a subset of thoughts
+      .map(thought => thought._id.toString()); // Extract _id property for references
+
+    await user.save(); // Save user object with updated thoughts references
+  }
 
   // loop through the saved videos, for each video we need to generate a video response and insert the video responses
   console.table(users);
