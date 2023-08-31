@@ -50,15 +50,19 @@ connection.once('open', async () => {
   const insertedUserIds = Object.values(generatedUsers.insertedIds);
   
   for (const userId of insertedUserIds) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId)
 
-    const numFriends = Math.floor(Math.random() * generatedUsers.length - 1) + 1; // Random number of friends (at least 1 friend)
-    const potentialFriendIds = insertedUserIds.filter(id => id !== userId);// Exclude the user itself, so user can't friend self
+    const numFriends = Math.floor(Math.random() * insertedUserIds.length - 1) + 1; // Random number of friends (at least 1 friend)
+    const potentialFriendIds = insertedUserIds.filter(id => id.toString !== userId.toString());// Exclude the user itself, so user can't friend self
     
+    //console.log(potentialFriendIds);
+    //console.log('numFriends:', numFriends);
+    //console.log('generatedUsers.length:', insertedUserIds.length);
+
     user.friends = potentialFriendIds
       .sort(() => Math.random() - 0.5) //(sort) shuffle friends, to assure randomness
       .slice(0, numFriends) //select subset of friends, make sure each user has a random and varied set of friends
-      //.map(friend => friend._id); //extract _id property, to create an array of references
+      .map(id => id.toString()); //extract _id property, to create an array of references
 
     await user.save(); // Save user object with updated friend references
   }
