@@ -29,7 +29,7 @@ Query data and information through insomnia or thunder client using the appropri
 
 Example Footage:
 
-Part 1: [https://drive.google.com/file/d/1VtSRJ2tjnnxq_s_Vglq1w7A5wvjK8_pw/view](https://drive.google.com/file/d/1VtSRJ2tjnnxq_s_Vglq1w7A5wvjK8_pw/view)
+Part 1: https://drive.google.com/file/d/1VtSRJ2tjnnxq_s_Vglq1w7A5wvjK8_pw/view
 
 Part 2: [https://drive.google.com/file/d/1s7_1_NQ1kDDvf9Dwb5GMPHpmx_2elNpP/view](https://drive.google.com/file/d/1s7_1_NQ1kDDvf9Dwb5GMPHpmx_2elNpP/view)
 
